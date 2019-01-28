@@ -17,7 +17,11 @@ public class BasicControllerModule extends Module {
 
     private final Map<ELogitech310, TalonSRX[]> mSRXs = new HashMap<>();
 
+    // HatchFlower mHatch;
+
     private final Map<ELogitech310, Solenoid> mPneumaticButtons = new HashMap<>();
+    private final Map<ELogitech310, Boolean> mPneumaticStates = new HashMap<>();
+    private final Map<ELogitech310, Boolean> mButtonStates = new HashMap<>();
 
     public BasicControllerModule(Codex<Double, ELogitech310> pController) {
         mController = pController;
@@ -35,9 +39,21 @@ public class BasicControllerModule extends Module {
         });
 
         mPneumaticButtons.put(ELogitech310.L_BTN, new Solenoid(0));
-        mPneumaticButtons.put(ELogitech310.START, new Solenoid(1));
-        mPneumaticButtons.put(ELogitech310.A_BTN, new Solenoid(2));
+        mPneumaticStates.put(ELogitech310.L_BTN, false);
+        mButtonStates.put(ELogitech310.L_BTN, false);
         mPneumaticButtons.put(ELogitech310.R_BTN, new Solenoid(3));
+        mPneumaticStates.put(ELogitech310.R_BTN, false);
+        mButtonStates.put(ELogitech310.R_BTN, false);
+        
+        mPneumaticButtons.put(ELogitech310.START, new Solenoid(1));
+        mPneumaticStates.put(ELogitech310.START, false);
+        mButtonStates.put(ELogitech310.START, false);
+
+        mPneumaticButtons.put(ELogitech310.A_BTN, new Solenoid(2));
+        mPneumaticStates.put(ELogitech310.A_BTN, false);
+        mButtonStates.put(ELogitech310.A_BTN, false);
+
+        // mHatch =  new HatchFlower(mController);
     }
 
     @Override
@@ -66,8 +82,35 @@ public class BasicControllerModule extends Module {
         }
 
         for(ELogitech310 btn : mPneumaticButtons.keySet()) {
-            mPneumaticButtons.get(btn).set(mController.isSet(btn));
+
+            // start = pressed = 0, changed = 0
+            boolean pressed = mController.isSet(btn);
+            boolean changed = (pressed != mButtonStates.get(btn));
+
+            if(pressed && changed) {
+                mPneumaticStates.put(btn, !mPneumaticStates.get(btn));
+            }
+
+            mButtonStates.put(btn, pressed);
+
+            // switch(btn) {
+            //     case L_BTN:
+            //         if(pressed && changed) {
+            //             mHatch.captureHatch();
+            //         }
+            //     break;
+            //     case R_BTN:
+            //         if(pressed && changed) {
+            //             mHatch.pushHatch();
+            //         }
+            //     break;
+            //     default:
+                    mPneumaticButtons.get(btn).set(mPneumaticStates.get(btn));
+            // }
+            
+            // mPneumaticButtons.get(btn).set(pressed);
         }
+
     }
 
     @Override

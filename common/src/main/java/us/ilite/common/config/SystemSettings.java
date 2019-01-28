@@ -111,6 +111,19 @@ public class SystemSettings extends NetworkTablesConstantsBase {
     public static double kDriveVelocity_kF = 0.0; // We don't care about this feedforward because we inject our own with ArbitraryFeedforward
     public static final int ULTRASONIC_PORT = 2;
 
+    // =============================================================================
+    // Hatch Flower constants
+    // =============================================================================
+    public static double kHatchFlowerSolenoidReleaseTimeSec = 0.250;
+    public static double kHatchFlowerPushDurationSec = 0.250;
+
+    public static int kHatchFlowerOpenCloseSolenoidAddress = 0;
+    public static int kHatchFlowerExtensionSolenoidAddress = 3;
+
+    // kHatchFlowerGrabToPushTransitionTimeSec is the time between releasing the 
+    // grab solenoid and engaging the push solenoid.
+    public static double kHatchFlowerGrabToPushTransitionTimeSec = 0.250;
+
 
     // =============================================================================
     // LimeLight Camera Constants
