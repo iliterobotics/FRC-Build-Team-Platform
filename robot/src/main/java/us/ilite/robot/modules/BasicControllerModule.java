@@ -30,6 +30,8 @@ public class BasicControllerModule extends Module {
 
     public BasicControllerModule(Codex<Double, ELogitech310> pController, BasicArcadeDrive pDrive) {
         mDriverJoystick = new Joystick(0);
+        mDriverJoystick.setThrottleChannel(1);
+        mDriverJoystick.setTwistChannel(4);
         mOperatorJoystick = new Joystick(1);
 
         mDrive = pDrive;
@@ -69,14 +71,14 @@ public class BasicControllerModule extends Module {
     }
 
     public void updateDriveTrain() {
-        DriveMessage mDriveMessage = DriveMessage.fromThrottleAndTurn(mDriverJoystick.getRawAxis(1), mDriverJoystick.getRawAxis(4));
+        DriveMessage mDriveMessage = DriveMessage.fromThrottleAndTurn(mDriverJoystick.getThrottle(), mDriverJoystick.getTwist());
         mDriveMessage.setNeutralMode(NeutralMode.Brake);
         mDriveMessage.setControlMode(ControlMode.PercentOutput);
         mDrive.setDriveMessage(mDriveMessage);
     }
 
     public void updatePneumatics() {
-//        if ()
+
     }
 
     @Override
