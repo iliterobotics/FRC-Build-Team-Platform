@@ -31,8 +31,8 @@ public class SystemSettings extends NetworkTablesConstantsBase {
     // Talon Addresses
     // =============================================================================
     // Encoders are on the rear Talons, so ID's are temporarily flipped around
-    public static  int kDriveLeftMasterTalonId = 1;
-    public static  int kDriveRightMasterTalonId = 2;
+    public static  int kDriveLeftMasterTalonId = 4;
+    public static  int kDriveRightMasterTalonId = 6;
 
 //    public static final int sXTalonMasterId = 9;
 //    public static final int sXTalonFollowerId = 10;
