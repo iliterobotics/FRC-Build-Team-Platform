@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.flybotix.hfr.codex.Codex;
 
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import us.ilite.common.config.SystemSettings;
 import us.ilite.common.types.input.ELogitech310;
+
+import javax.naming.ldap.Control;
 
 public class BasicControllerModule extends Module {
 
@@ -66,7 +69,10 @@ public class BasicControllerModule extends Module {
     }
 
     public void updateDriveTrain() {
-        mDrive.setDriveMessage(DriveMessage.fromThrottleAndTurn(mDriverJoystick.getY(GenericHID.Hand.kLeft), mDriverJoystick.getX(GenericHID.Hand.kRight)));
+        DriveMessage mDriveMessage = DriveMessage.fromThrottleAndTurn(mDriverJoystick.getRawAxis(1), mDriverJoystick.getRawAxis(4));
+        mDriveMessage.setNeutralMode(NeutralMode.Brake);
+        mDriveMessage.setControlMode(ControlMode.PercentOutput);
+        mDrive.setDriveMessage(mDriveMessage);
     }
 
     public void updatePneumatics() {
