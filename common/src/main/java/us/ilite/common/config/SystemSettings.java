@@ -34,12 +34,12 @@ public class SystemSettings extends NetworkTablesConstantsBase {
     public static  int kDriveLeftMasterTalonId = 1;
     public static  int kDriveRightMasterTalonId = 2;
 
-    public static final int sXTalonMasterId = 9;
-    public static final int sXTalonFollowerId = 10;
-    public static final int sYTalonMasterId = 11;
-    public static final int sYTalonFollowerId = 12;
-    public static final int sBTalonMasterId = 13;
-    public static final int sBTalonFollowerId = 14;
+//    public static final int sXTalonMasterId = 9;
+//    public static final int sXTalonFollowerId = 10;
+//    public static final int sYTalonMasterId = 11;
+//    public static final int sYTalonFollowerId = 12;
+//    public static final int sBTalonMasterId = 13;
+//    public static final int sBTalonFollowerId = 14;
 
     public static int kPigeonId = 3;
 

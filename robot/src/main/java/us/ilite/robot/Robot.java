@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
         mHardware = new Hardware();
 
         mDriveTrain = new BasicArcadeDrive(mController);
-        mControlModule = new BasicControllerModule(mController);
+        mControlModule = new BasicControllerModule(mController, mDriveTrain);
 
         mRunningModules.setModules();
 
@@ -86,6 +86,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        mRunningModules.setModules(mControlModule, mDriveTrain);
+        mRunningModules.modeInit(mSystemClock.getCurrentTime());
+        mRunningModules.periodicInput(mSystemClock.getCurrentTime());
     }
 
     @Override

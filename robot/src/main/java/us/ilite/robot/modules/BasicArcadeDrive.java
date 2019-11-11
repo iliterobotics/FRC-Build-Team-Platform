@@ -42,7 +42,7 @@ public class BasicArcadeDrive extends Module {
 	  	setDriveMessage(DriveMessage.kNeutral);
 	}
 
-	private void setDriveMessage(DriveMessage pMessage) {
+	public void setDriveMessage(DriveMessage pMessage) {
 		double left = clamp(pMessage.leftOutput, MAX_POWER_OUTPUT);
 		double right = clamp(pMessage.rightOutput, MAX_POWER_OUTPUT);
 		mLeftTalon.set(pMessage.leftControlMode, left);

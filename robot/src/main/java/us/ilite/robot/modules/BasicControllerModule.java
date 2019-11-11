@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.flybotix.hfr.codex.Codex;
 
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import us.ilite.common.config.SystemSettings;
 import us.ilite.common.types.input.ELogitech310;
@@ -14,29 +16,23 @@ import us.ilite.common.types.input.ELogitech310;
 public class BasicControllerModule extends Module {
 
     private final Codex<Double, ELogitech310> mController;
-
-    private final Map<ELogitech310, TalonSRX[]> mSRXs = new HashMap<>();
-
-    // HatchFlower mHatch;
+    private final Map<ELogitech310, TalonSRX> mSRXs = new HashMap<>();
+    private BasicArcadeDrive mDrive;
+    private Joystick mDriverJoystick;
+    private Joystick mOperatorJoystick;
 
     private final Map<ELogitech310, Solenoid> mPneumaticButtons = new HashMap<>();
     private final Map<ELogitech310, Boolean> mPneumaticStates = new HashMap<>();
     private final Map<ELogitech310, Boolean> mButtonStates = new HashMap<>();
 
-    public BasicControllerModule(Codex<Double, ELogitech310> pController) {
+    public BasicControllerModule(Codex<Double, ELogitech310> pController, BasicArcadeDrive pDrive) {
+        mDriverJoystick = new Joystick(0);
+        mOperatorJoystick = new Joystick(1);
+
+        mDrive = pDrive;
         mController = pController;
-        mSRXs.put(ELogitech310.B_BTN, new TalonSRX[]{
-            new TalonSRX(SystemSettings.sBTalonMasterId),
-            new TalonSRX(SystemSettings.sBTalonFollowerId)
-        });
-        mSRXs.put(ELogitech310.X_BTN, new TalonSRX[]{
-            new TalonSRX(SystemSettings.sXTalonMasterId),
-            new TalonSRX(SystemSettings.sXTalonFollowerId)
-        });
-        mSRXs.put(ELogitech310.Y_BTN, new TalonSRX[]{
-            new TalonSRX(SystemSettings.sYTalonMasterId),
-            new TalonSRX(SystemSettings.sYTalonFollowerId)
-        });
+        mSRXs.put(ELogitech310.LEFT_X_AXIS, new TalonSRX(SystemSettings.kDriveLeftMasterTalonId));
+        mSRXs.put(ELogitech310.RIGHT_X_AXIS, new TalonSRX(SystemSettings.kDriveRightMasterTalonId));
 
         mPneumaticButtons.put(ELogitech310.L_BTN, new Solenoid(0));
         mPneumaticStates.put(ELogitech310.L_BTN, false);
@@ -52,8 +48,6 @@ public class BasicControllerModule extends Module {
         mPneumaticButtons.put(ELogitech310.A_BTN, new Solenoid(2));
         mPneumaticStates.put(ELogitech310.A_BTN, false);
         mButtonStates.put(ELogitech310.A_BTN, false);
-
-        // mHatch =  new HatchFlower(mController);
     }
 
     @Override
@@ -68,49 +62,15 @@ public class BasicControllerModule extends Module {
 
     @Override
     public void update(double pNow) {
-        
-		double throttle1 = -mController.get(ELogitech310.LEFT_TRIGGER_AXIS);
-		double throttle2 = mController.get(ELogitech310.RIGHT_TRIGGER_AXIS);
-        double throttle = throttle1 + throttle2;
-        
-        for(ELogitech310 btn : mSRXs.keySet()) {
-            if(mController.isSet(btn)) {
-                for(TalonSRX ctrl : mSRXs.get(btn)) {
-                    ctrl.set(ControlMode.PercentOutput, throttle);
-                }
-            }
-        }
+        updateDriveTrain();
+    }
 
-        for(ELogitech310 btn : mPneumaticButtons.keySet()) {
+    public void updateDriveTrain() {
+        mDrive.setDriveMessage(DriveMessage.fromThrottleAndTurn(mDriverJoystick.getY(GenericHID.Hand.kLeft), mDriverJoystick.getX(GenericHID.Hand.kRight)));
+    }
 
-            // start = pressed = 0, changed = 0
-            boolean pressed = mController.isSet(btn);
-            boolean changed = (pressed != mButtonStates.get(btn));
-
-            if(pressed && changed) {
-                mPneumaticStates.put(btn, !mPneumaticStates.get(btn));
-            }
-
-            mButtonStates.put(btn, pressed);
-
-            // switch(btn) {
-            //     case L_BTN:
-            //         if(pressed && changed) {
-            //             mHatch.captureHatch();
-            //         }
-            //     break;
-            //     case R_BTN:
-            //         if(pressed && changed) {
-            //             mHatch.pushHatch();
-            //         }
-            //     break;
-            //     default:
-                    mPneumaticButtons.get(btn).set(mPneumaticStates.get(btn));
-            // }
-            
-            // mPneumaticButtons.get(btn).set(pressed);
-        }
-
+    public void updatePneumatics() {
+//        if ()
     }
 
     @Override

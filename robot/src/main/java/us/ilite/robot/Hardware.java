@@ -4,6 +4,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ctre.phoenix.CANifier;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.flybotix.hfr.util.log.ILog;
 import com.flybotix.hfr.util.log.Logger;
@@ -12,7 +14,11 @@ import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-public class Hardware {
+import edu.wpi.first.wpilibj.Talon;
+import us.ilite.common.config.SystemSettings;
+import us.ilite.robot.modules.DriveMessage;
+
+    public class Hardware {
   private ILog mLog = Logger.createLog(Hardware.class);
 
   private Joystick mDriverJoystick;
@@ -23,9 +29,13 @@ public class Hardware {
   private CANifier mCanifier;
   private VideoCamera mVisionCamera;
   private DigitalInput mCarriageBeamBreak;
+  private TalonSRX mLeftTalon;
+  private TalonSRX mRightTalon;
+
   
   Hardware() {
-    
+      mLeftTalon = new TalonSRX(SystemSettings.kDriveLeftMasterTalonId);
+      mRightTalon = new TalonSRX(SystemSettings.kDriveRightMasterTalonId);
   }
   
   void init(
@@ -42,21 +52,13 @@ public class Hardware {
     mOperatorJoystick = pOperatorJoystick;
     mPDP = pPDP;
     mPigeon = pPigeon;
-    //mVisionCamera = pVisionCamera;
-    //mVisionCamera.setFPS(30);
     mCarriageBeamBreak = pCarriageBeamBreak;
-//    pInitializationPool.execute(() -> {
-//      while(mAHRS.isCalibrating()) {
-//        try {
-//          Thread.sleep(20);
-//        } catch (InterruptedException e) {
-//          Thread.currentThread().interrupt();
-//        }
-//      }
-//      mNavxReady.set(true);
-//      mLog.info(System.currentTimeMillis() + " NAVX Calibrated");
-//    });
     mCanifier = pCanifier;
+  }
+
+  public void setDriveMessage(DriveMessage pDriveMessage) {
+    mLeftTalon.set(ControlMode.PercentOutput, pDriveMessage.leftOutput);
+    mRightTalon.set(ControlMode.PercentOutput, pDriveMessage.rightOutput);
   }
   
   public Joystick getDriverJoystick() { 
