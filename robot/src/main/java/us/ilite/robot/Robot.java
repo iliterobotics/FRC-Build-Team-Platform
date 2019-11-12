@@ -2,6 +2,8 @@ package us.ilite.robot;
 
 import java.net.SocketException;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.flybotix.hfr.codex.Codex;
 import com.flybotix.hfr.util.log.ELevel;
 import com.flybotix.hfr.util.log.ILog;
@@ -9,10 +11,8 @@ import com.flybotix.hfr.util.log.Logger;
 
 import edu.wpi.first.networktables.ConnectionInfo;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
+import us.ilite.common.config.SystemSettings;
 import us.ilite.common.io.Network;
 import us.ilite.common.types.input.ELogitech310;
 import us.ilite.lib.drivers.Clock;
@@ -109,9 +109,10 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
 
         ELogitech310.map(mController, mDriverJoystick);
-
-        mRunningModules.periodicInput(mSystemClock.getCurrentTime());
-        mRunningModules.update(mSystemClock.getCurrentTime());
+//        mRunningModules.periodicInput(mSystemClock.getCurrentTime());
+//        mRunningModules.update(mSystemClock.getCurrentTime());
+        new TalonSRX(SystemSettings.kDriveRightMasterTalonId).set(ControlMode.PercentOutput, 0.5);
+        new TalonSRX(SystemSettings.kDriveLeftMasterTalonId).set(ControlMode.PercentOutput, 0.5);
     }
 
     @Override
