@@ -1,4 +1,4 @@
-	package us.ilite.robot;
+package us.ilite.robot;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,27 +18,27 @@ import edu.wpi.first.wpilibj.Talon;
 import us.ilite.common.config.SystemSettings;
 import us.ilite.robot.modules.DriveMessage;
 
-    public class Hardware {
-  private ILog mLog = Logger.createLog(Hardware.class);
+public class Hardware {
+    private ILog mLog = Logger.createLog(Hardware.class);
 
-  private Joystick mDriverJoystick;
-  private Joystick mOperatorJoystick;
-  private PowerDistributionPanel mPDP;
-  public final AtomicBoolean mNavxReady = new AtomicBoolean(false);
-  private PigeonIMU mPigeon;
-  private CANifier mCanifier;
-  private VideoCamera mVisionCamera;
-  private DigitalInput mCarriageBeamBreak;
-  private TalonSRX mLeftTalon;
-  private TalonSRX mRightTalon;
+    private Joystick mDriverJoystick;
+    private Joystick mOperatorJoystick;
+    private PowerDistributionPanel mPDP;
+    public final AtomicBoolean mNavxReady = new AtomicBoolean(false);
+    private PigeonIMU mPigeon;
+    private CANifier mCanifier;
+    private VideoCamera mVisionCamera;
+    private DigitalInput mCarriageBeamBreak;
+    private TalonSRX mLeftTalon;
+    private TalonSRX mRightTalon;
 
-  
-  Hardware() {
+
+    public Hardware() {
       mLeftTalon = new TalonSRX(SystemSettings.kDriveLeftMasterTalonId);
       mRightTalon = new TalonSRX(SystemSettings.kDriveRightMasterTalonId);
-  }
-  
-  void init(
+    }
+
+    void init(
       Executor pInitializationPool,
       Joystick pDriverJoystick,
       Joystick pOperatorJoystick,
@@ -47,44 +47,44 @@ import us.ilite.robot.modules.DriveMessage;
       CANifier pCanifier,
       //VideoCamera pVisionCamera,
       DigitalInput pCarriageBeamBreak
-  ) {
+    ) {
     mDriverJoystick = pDriverJoystick;
     mOperatorJoystick = pOperatorJoystick;
     mPDP = pPDP;
     mPigeon = pPigeon;
     mCarriageBeamBreak = pCarriageBeamBreak;
     mCanifier = pCanifier;
-  }
+    }
 
-  public void setDriveMessage(DriveMessage pDriveMessage) {
+    public void setDriveMessage(DriveMessage pDriveMessage) {
     mLeftTalon.set(ControlMode.PercentOutput, pDriveMessage.leftOutput);
     mRightTalon.set(ControlMode.PercentOutput, pDriveMessage.rightOutput);
-  }
-  
-  public Joystick getDriverJoystick() { 
-    return mDriverJoystick;
-  }
-  
-  public Joystick getOperatorJoystick() {
-    return mOperatorJoystick;
-  }
-  
-  public PowerDistributionPanel getPDP() {
-    return mPDP;
-  }
-  
-  public VideoCamera getVisionCamera() {
-    return mVisionCamera;
-  }
+    }
 
-  public CANifier getCanifier()
-  {
-	  return mCanifier;
-  }
-  
-  public DigitalInput getCarriageBeamBreak() {
+    public Joystick getDriverJoystick() {
+    return mDriverJoystick;
+    }
+
+    public Joystick getOperatorJoystick() {
+    return mOperatorJoystick;
+    }
+
+    public PowerDistributionPanel getPDP() {
+    return mPDP;
+    }
+
+    public VideoCamera getVisionCamera() {
+    return mVisionCamera;
+    }
+
+    public CANifier getCanifier()
+    {
+      return mCanifier;
+    }
+
+    public DigitalInput getCarriageBeamBreak() {
     return mCarriageBeamBreak;
-  }
-  
+    }
+
 }
 

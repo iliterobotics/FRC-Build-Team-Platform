@@ -10,6 +10,7 @@ import us.ilite.common.config.SystemSettings;
 import us.ilite.common.lib.control.DriveController;
 import us.ilite.common.types.input.EInputScale;
 import us.ilite.common.types.input.ELogitech310;
+import us.ilite.robot.Hardware;
 
 /**
  * Class for running all drive train control operations from both autonomous and
@@ -21,32 +22,18 @@ public class BasicArcadeDrive extends Module {
 	private final Codex<Double, ELogitech310> mController;
 
 	private static final double MAX_POWER_OUTPUT = 0.5;
-
-	private TalonSRX mLeftTalon = new TalonSRX(SystemSettings.kDriveLeftMasterTalonId);
-	private TalonSRX mRightTalon = new TalonSRX(SystemSettings.kDriveRightMasterTalonId);
+	private DriveMessage mDriveMessage;
+	private Hardware mHardware;
 
 	public BasicArcadeDrive(Codex<Double, ELogitech310> pController) {
 		mController = pController;
-
+        mHardware = new Hardware();
 		
 	}
 
-	private static double clamp(double pValue, double pClamp) {
-		return Math.min(Math.max(pValue, -pClamp), pClamp);
-	}
-	
-
-
 	@Override
 	public void modeInit(double pNow) {
-	  	setDriveMessage(DriveMessage.kNeutral);
-	}
-
-	public void setDriveMessage(DriveMessage pMessage) {
-		double left = clamp(pMessage.leftOutput, MAX_POWER_OUTPUT);
-		double right = clamp(pMessage.rightOutput, MAX_POWER_OUTPUT);
-		mLeftTalon.set(pMessage.leftControlMode, left);
-		mRightTalon.set(pMessage.rightControlMode, right);
+	    setDriveMessage(DriveMessage.kNeutral);
 	}
 
 	@Override
@@ -55,15 +42,20 @@ public class BasicArcadeDrive extends Module {
 
 	@Override
 	public void update(double pNow) {
-		double rotate = mController.get(ELogitech310.LEFT_Y_AXIS);
-		rotate = EInputScale.EXPONENTIAL.map(rotate, 2);
-		
-		double throttle =  mController.get(ELogitech310.RIGHT_X_AXIS);
-		
-		setDriveMessage(new DriveMessage(throttle - rotate, throttle + rotate));
+        mHardware.setDriveMessage(mDriveMessage);
 	}
-	
-	@Override
+
+    public void setDriveMessage(DriveMessage pDriveMessage) {
+        double left = clamp(pDriveMessage.leftOutput, MAX_POWER_OUTPUT);
+        double right = clamp(pDriveMessage.rightOutput, MAX_POWER_OUTPUT);
+        mDriveMessage = new DriveMessage(left, right);
+    }
+
+    private static double clamp(double pValue, double pClamp) {
+        return Math.min(Math.max(pValue, -pClamp), pClamp);
+    }
+
+    @Override
 	public void shutdown(double pNow) {
 	}
 
